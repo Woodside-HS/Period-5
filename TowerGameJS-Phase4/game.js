@@ -269,11 +269,17 @@ class Game {
   // canvas.
   createTileDivs(){
     var tiles = [];
+    var count = 0;
+    var x;
+    var y;
 
     for(var i = 0; i < 5; i++){
       var mtd = document.createElement("div"); // createDiv("");
+      var img = new Image();
+    //  img.src = "enemy.png";
+      img.onload = draw;
       var cnvTurImgPath = "tow" + (i+1) + "s.png";  // small tower image for canvas
-      var cnvBulImgPath = "b" + (i+1) + ".png";     // bullet image for canvas
+      var cnvBulImgPath = "b" + (i+1) + ".png";     // bullet   for canvas
       mtd.cnvTurImg = new Image();
       mtd.cnvTurImg.addEventListener('load',this.hideImgElement,false);
       mtd.cnvTurImg.addEventListener('error', function() { console.log(cnvTurImgPath + " failed to load"); }, false);
