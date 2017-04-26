@@ -2,12 +2,15 @@
 
 class Bullet{
 
-  constructor(location, bImg, angle){
+  constructor(location, bImg, angle, type){
     // issue#1 use preloaded bullet image instead of loadImage
+    this.ability = type;
     this.loc = location;
-    this.speed = 12;
+    this.speed = 60;
     this.angle = angle;
     this.img = bImg;
+    this.start = location;
+
   }
 
   run(){
@@ -15,7 +18,7 @@ class Bullet{
     this.update();
   }
   render(){
-  
+
     var ctx = towerGame.context;
     ctx.save();
     ctx.translate(this.loc.x, this.loc.y);

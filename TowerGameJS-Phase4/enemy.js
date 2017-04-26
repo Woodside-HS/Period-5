@@ -6,13 +6,22 @@ class Enemy {
     this.loc = startCell.center.copy();
     this.randomPath = randomPath;   //boolean to randomize or not
     this.radius = 3.0;
-    this.vel = 3.0;       // velocity factor
+    this.isLocked = false;
+    this.vel = 1.8;
+    this.isTarget= false;
+    this.col = 'blue'
+     this.ctx = this.game.context;
+     this.lastTime = Date.now();
+     this.coolDown = 1000;
+       // velocity factor
+    this.towerLoc =  vector2d(0, 0);
     this.targetCell = this.nextTarget();
     this.target =  this.targetCell.center;
-    var targetVec = this.target.copy().sub(this.loc);
-    this.velVec = targetVec.copy().normalize().scale(this.vel);      // initial velocity vector
+    this.targetVec = this.target.copy().sub(this.loc);
+    this.velVec;
+    this.increasedDamg = 3;
+    this.health = 100;     // initial velocity vector
     this.kill = false;
-
     this.img = new Image();
     this.img.src = "images/spritesheets/enemy.png";
     this.img.addEventListener('error', function() { console.log(this.img.src + " failed to load"); }, false);
@@ -47,15 +56,18 @@ class Enemy {
   // Enemies with a randomized path are blue and
   // enemies with an optimal path are green
   render() {
-    var ctx = this.game.context;
+
+
 
 
     // if(this.randomPath)
-    //     ctx.fillStyle = 'blue';
-    // else ctx.fillStyle = 'green';
-    // ctx.beginPath();
-    // ctx.ellipse(this.loc.x, this.loc.y, this.radius, this.radius, 0, 2*Math.PI, false);
-    // ctx.fill();
+     this.ctx.fillStyle = this.col;
+    // else this.ctx.fillStyle = 'green';
+     this.ctx.beginPath();
+     this.ctx.ellipse(this.loc.x, this.loc.y, this.radius, this.radius, 0, 2*Math.PI, false);
+     this.ctx.fill();
+
+
   }
 
     // update()
@@ -65,6 +77,73 @@ class Enemy {
     // find a new target and rotate the velocity in the direaction
     // of the new target.
   update() {
+    let millis = Date.now();
+    for(let h = 0; h < towerGame.bullets.length; h++){
+      if(this.loc.dist(towerGame.bullets[h].loc) < 20){
+        if(towerGame.bullets[h].ability == "normal"){
+          //this.health = this.health - 100;
+          this.health = this.health - 100;
+          console.log(this.health)
+          towerGame.bullets.splice(h, 1);
+        } else if(towerGame.bullets[h].ability == "fast"){
+          this.health = this.health - 200;
+          console.log(this.health)
+          towerGame.bullets.splice(h, 1);
+        }else if(towerGame.bullets[h].ability == "explosive"){
+
+          //this.health = this.health - 10;
+          if(this.health <= 0){
+        //    this.kill = true;
+          }
+          this.locations = this.loc;
+          towerGame.explosiveBullets.push(new Explosives(towerGame.bullets[h].loc));
+          //towerGame.explosiveBullets.push(new Explosives(towerGame.bullets[h].loc));
+          towerGame.bullets.splice(h, 1);
+          //console.log("exp");
+        }
+
+
+    }
+  }
+
+  if(this.isLocked){
+    var damages = 1+ this.increasedDamg;
+    this.health = this.health-this.increasedDamg;
+  }
+
+
+
+    for(let i = 0; i < towerGame.explosiveBullets.length; i++){
+      if(this.loc.dist(towerGame.explosiveBullets[i].loc) < 30){
+        this.health = this.health -10;
+      }
+      if(towerGame.explosiveBullets[i].kills == true ){
+        towerGame.explosiveBullets.splice(i, 1);
+        console.log("die");
+      }
+    }
+
+
+
+  for(let t = 0; t < towerGame.towers.length; t++){
+
+    if(this.loc.dist(towerGame.towers[t].loc) <  100 && towerGame.towers[t].ability == "freeze"){
+      this.vel = 1.0;
+      break;
+    } else {
+      //console.log("cancel freeze");
+      this.vel = 1.8;
+    }
+  }
+//  console.log(this.health);
+  if(this.health <= 0){
+    this.kill = true;
+    //console.log("kills");
+  }
+
+
+
+    this.velVec  = this.targetVec.copy().normalize().scale(this.vel);
     if(this.loc.dist(this.target) <= this.radius*4) {    // if we have reached the current target
         this.currentCell = this.targetCell;
         if(this.currentCell == this.game.root) {   // we have reached the end of the path
