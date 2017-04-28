@@ -98,7 +98,7 @@ class Tower {
       if( k < 400 && towerGame.enemies.length != 0){
       var rys = new LockOn(this.loc, towerGame.closeForRay);
       rys.run();
-     towerGame.enemies[this.currentIndex].health -=  10;
+     towerGame.enemies[this.currentIndex].isLocked = true;//health -=  10;
     } else {
       towerGame.rays = [];
     }

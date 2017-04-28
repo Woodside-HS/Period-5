@@ -19,7 +19,7 @@ class Enemy {
     this.target =  this.targetCell.center;
     this.targetVec = this.target.copy().sub(this.loc);
     this.velVec;
-    this.increasedDamg = 7;
+    this.increasedDamg = 100;
     this.health = 100;     // initial velocity vector
     this.kill = false;
     this.damages = 0;
