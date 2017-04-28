@@ -47,7 +47,7 @@ class Tower {
 
     } else {
 
-      this.currentIndex++;
+      this.currentIndex ++;
     }
   }
     if(towerGame.enemies.length != 0 && towerGame.enemies[this.currentIndex].loc != undefined){

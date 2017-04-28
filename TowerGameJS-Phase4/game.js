@@ -22,6 +22,8 @@ function draw() {   // the animation loop
 class Game {
   //  This is a test
   constructor() {
+    this.enemyThrees;
+    this.enemyTwos;
     this.checkOnce = true;// from setup()
     this.addEnemyTimer = 60;
     this.stopped = 0;
@@ -64,8 +66,11 @@ class Game {
     this.canvas.addEventListener('click', this.handleCNVMouseClicked, false);
 
     window.addEventListener('keypress', function(evt) {
-        if(evt.key == "E" || evt.key == "e" && towerGame.enemyTwo.length == 0 && towerGame.enemies.length == 0)
+        if(evt.key == "E" || evt.key == "e" && towerGame.enemyTwo.length == 0 && towerGame.enemies.length == 0){
             towerGame.sendEnemies();
+            towerGame.sendEnemyTwo();
+            towerGame.sendEnemyThree();
+          }
         }, false);
 
     this.mouseX = 0;
@@ -296,10 +301,11 @@ class Game {
     //addEnemyTimer = (stopped > 40) ? 20 : 30;
 
     updateWaves(){
+      console.log(this.enemies.length);
       if(this.timeSpawn > 0 && this.enemies.length == 0 && this.checkOnce){
        this.enemyNum += 3;
         this.enemyTwoNum +=2;
-        console.log(this.wave);
+      //  console.log(this.wave);
         //if(this.wave > 4){
           this.enemyThreeNum += 1;
       //  }
@@ -327,35 +333,41 @@ class Game {
       }
     }
     sendEnemies() {
+      var numEnemies = Math.random() * 5;     // up to 5 enemies
+      var row, col, startCell, i, j;
 
-        var numEnemies = Math.random() * 5;     // up to 5 enemies
-        var row, col, startCell, i, j;
-
-        for(var i = 0; i < this.enemyNum; i++){
-          setTimeout(function(){
-            towerGame.addEnemies();
-          }, 100 * i);
-
-      }
-      if(this.enemyTwoNum > 0){
-      for(var i = 0; i < this.enemyTwoNum; i++){
+      for(var i = 0; i < this.enemyNum; i++){
         setTimeout(function(){
-          towerGame.addEnemiesTwo();
-        }, 100 * i);
-
-    }
-  }
-
-  if(this.enemyThreeNum > 0){
-    for(var i = 0; i < this.enemyThreeNum; i++){
-      setTimeout(function(){
-        towerGame.addEnemiesThree();
+      //console.log("one");
+        towerGame.addEnemies();
       }, 100 * i);
-
     }
-  }
+
       this.timeSpawn++;
       //console.log(this.timeSpawn);//this.enemies.length);
+    }
+
+    sendEnemyTwo(){
+      if(this.enemyTwoNum > 0){
+        for(var i = 0; i < this.enemyTwoNum; i++){
+          setTimeout(function(){
+          //  console.log("two");
+            towerGame.addEnemiesTwo();
+          }, 100 * i);
+          }
+        }
+    }
+
+    sendEnemyThree(){
+      if(this.enemyThreeNum > 0){
+        for(var i = 0; i < this.enemyThreeNum; i++){
+          setTimeout(function(){
+            //console.log("three");
+            towerGame.addEnemiesThree();
+          }, 100 * i);
+
+        }
+      }
     }
 
     // Delete any enemies that have died

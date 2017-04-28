@@ -5,7 +5,9 @@ class RedEnemy extends Enemy {
       this.col = 'red';
       this.health = 500;     // initial velocity vector
       this.kill = false;
-      console.log("add Red");
+      this.vel = 2.8;
+      this.initialVel = 2.8;
+      //console.log("add Red");
       }
 
 

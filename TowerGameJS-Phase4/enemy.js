@@ -7,7 +7,8 @@ class Enemy {
     this.randomPath = randomPath;   //boolean to randomize or not
     this.radius = 3.0;
     this.isLocked = false;
-    this.vel = 1.8;
+    this.initialVel = 1.8;
+    this.vel = 1.8;//this.initialVel;
     this.isTarget= false;
     this.col = 'blue'
      this.ctx = this.game.context;
@@ -19,9 +20,10 @@ class Enemy {
     this.target =  this.targetCell.center;
     this.targetVec = this.target.copy().sub(this.loc);
     this.velVec;
-    this.increasedDamg = 100;
+    this.increasedDamg = 18;
     this.health = 100;     // initial velocity vector
     this.kill = false;
+    this.slowVel= this.initialVel - .8;
     this.damages = 0;
     this.img = new Image();
     this.img.src = "images/spritesheets/enemy.png";
@@ -129,11 +131,11 @@ class Enemy {
   for(let t = 0; t < towerGame.towers.length; t++){
 
     if(this.loc.dist(towerGame.towers[t].loc) <  100 && towerGame.towers[t].ability == "freeze"){
-      this.vel = 1.0;
+      this.vel = this.initialVel - .8;
       break;
     } else {
       //console.log("cancel freeze");
-      this.vel = 1.8;
+      this.vel = this.initialVel;
     }
   }
 //  console.log(this.health);
