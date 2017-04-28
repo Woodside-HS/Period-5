@@ -14,10 +14,11 @@ class LockOn{
   }
   render(){
     var ctx = towerGame.context;
-    ctx.fillStyle = 'green';
+
     ctx.beginPath();
     ctx.moveTo(this.loc.x, this.loc.y);
     ctx.lineTo(this.targetLoc.x, this.targetLoc.y);
+    ctx.strokeStyle = '#e806a7';
     ctx.stroke();
 
 

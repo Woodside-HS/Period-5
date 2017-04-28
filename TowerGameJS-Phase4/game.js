@@ -26,9 +26,9 @@ class Game {
     this.addEnemyTimer = 60;
     this.stopped = 0;
     this.isRunning = true;
-    this.enemyNum = 10;
-    this.enemyTwoNum = 0;
-    this.enemyThreeNum = -4;
+    this.enemyNum = 5;
+    this.enemyTwoNum = -4;
+    this.enemyThreeNum = -9;
     this.timeSpawn = 0;
     this.enemyTwo = [];
     this.placingTower = false;
@@ -93,7 +93,7 @@ class Game {
   loadSprites(){
       for (let i = 0; i < 1; i++){
     //    console.log(json);
-        this.sprites.push(new Sprite(new vector2d(20,500), 50, 100, json));
+        //this.sprites.push(new Sprite(new vector2d(20,500), 50, 100, json));
       }
   }
 
@@ -297,11 +297,11 @@ class Game {
 
     updateWaves(){
       if(this.timeSpawn > 0 && this.enemies.length == 0 && this.checkOnce){
-       this.enemyNum += 5;
-        this.enemyTwoNum +=3;
+       this.enemyNum += 3;
+        this.enemyTwoNum +=2;
         console.log(this.wave);
         //if(this.wave > 4){
-          this.enemyThreeNum += 2;
+          this.enemyThreeNum += 1;
       //  }
         this.checkOnce = false;
       }

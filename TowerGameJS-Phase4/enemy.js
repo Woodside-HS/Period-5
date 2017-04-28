@@ -19,9 +19,10 @@ class Enemy {
     this.target =  this.targetCell.center;
     this.targetVec = this.target.copy().sub(this.loc);
     this.velVec;
-    this.increasedDamg = 3;
+    this.increasedDamg = 7;
     this.health = 100;     // initial velocity vector
     this.kill = false;
+    this.damages = 0;
     this.img = new Image();
     this.img.src = "images/spritesheets/enemy.png";
     this.img.addEventListener('error', function() { console.log(this.img.src + " failed to load"); }, false);
@@ -79,7 +80,7 @@ class Enemy {
   update() {
     let millis = Date.now();
     for(let h = 0; h < towerGame.bullets.length; h++){
-      if(this.loc.dist(towerGame.bullets[h].loc) < 20){
+      if(this.loc.dist(towerGame.bullets[h].loc) < 40){
         if(towerGame.bullets[h].ability == "normal"){
           //this.health = this.health - 100;
           this.health = this.health - 100;
@@ -107,7 +108,7 @@ class Enemy {
   }
 
   if(this.isLocked){
-    var damages = 1+ this.increasedDamg;
+    this.damages = 1+ this.increasedDamg;
     this.health = this.health-this.increasedDamg;
   }
 
