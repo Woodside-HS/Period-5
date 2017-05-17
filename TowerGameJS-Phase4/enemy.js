@@ -5,17 +5,16 @@ class Enemy {
     this.currentCell = startCell;
     this.loc = startCell.center.copy();
     this.randomPath = randomPath;   //boolean to randomize or not
-    this.radius = 10.0;
+    this.radius = 23.0;
     this.vel = 3.0;       // velocity factor
     this.targetCell = this.nextTarget();
     this.target =  this.targetCell.center;
     var targetVec = this.target.copy().sub(this.loc);
     this.velVec = targetVec.copy().normalize().scale(this.vel);      // initial velocity vector
     this.kill = false;
-    this.shape = "square";     //circle, square or point
 
     this.img = new Image();
-    this.img.src = "images/spritesheets/enemy.png";
+    this.img.src = "resources/images/spritesheets/enemy.png";
     this.img.addEventListener('error', function() { console.log(this.img.src + " failed to load"); }, false);
   }
 
@@ -51,12 +50,12 @@ class Enemy {
     var ctx = this.game.context;
 
 
-    if(this.randomPath)
-        ctx.fillStyle = 'blue';
-    else ctx.fillStyle = 'green';
-    ctx.beginPath();
-    ctx.ellipse(this.loc.x, this.loc.y, this.radius, this.radius, 0, 2*Math.PI, false);
-    ctx.fill();
+     if(this.randomPath)
+         ctx.fillStyle = 'blue';
+     else ctx.fillStyle = 'green';
+     ctx.beginPath();
+     ctx.ellipse(this.loc.x, this.loc.y, this.radius, this.radius, 0, 2*Math.PI, false);
+     ctx.fill();
   }
 
     // update()

@@ -359,8 +359,8 @@ class Game {
 
     for(var i = 0; i < 5; i++){
       var mtd = document.createElement("div"); // createDiv("");
-      var cnvTurImgPath = "tow" + (i+1) + "s.png";  // small tower image for canvas
-      var cnvBulImgPath = "b" + (i+1) + ".png";     // bullet image for canvas
+      var cnvTurImgPath = "resources/images/sprites/tow" + (i+1) + "s.png";  // small tower image for canvas
+      var cnvBulImgPath = "resources/images/sprites/b" + (i+1) + ".png";     // bullet image for canvas
       mtd.cnvTurImg = new Image();
       mtd.cnvTurImg.addEventListener('load',this.hideImgElement,false);
       mtd.cnvTurImg.addEventListener('error', function() { console.log(cnvTurImgPath + " failed to load"); }, false);
@@ -376,7 +376,7 @@ class Game {
       mtd.cost = 100*i +50;
       mtd.id = 'towImgDiv' + i;
       tiles.push(mtd);
-      var imgName = 'tow' + i + '.png'; // large image for menu tile
+      var imgName = 'resources/images/sprites/tow' + i + '.png'; // large image for menu tile
       var tImg = new Image();
       tImg.addEventListener('error', function() { console.log(imgName + " failed to load"); }, false);
       tImg.src = imgName;

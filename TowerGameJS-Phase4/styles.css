@@ -27,7 +27,7 @@ body{
 
 #canDiv{
   background-color: lightgreen;
-  background-image: url("mount.png");
+  background-image: url("resources/images/bg/mount.png");
   width:900px;
   height:750px;
   float:left;

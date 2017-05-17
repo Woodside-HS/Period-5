@@ -8,15 +8,14 @@ class Bullet{
     this.speed = 12;
     this.angle = angle;
     this.img = bImg;
-    this.shape = "point";     //circle, square or point
   }
 
   run(){
     this.render();
     this.update();
   }
-
-  render() {
+  render(){
+  
     var ctx = towerGame.context;
     ctx.save();
     ctx.translate(this.loc.x, this.loc.y);
