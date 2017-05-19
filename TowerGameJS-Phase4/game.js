@@ -7,7 +7,6 @@ var towerGame;   // the global game object
 const FRAME_RATE=30;
 var cellId = 0;
 
-
 function setup() {
   towerGame = new Game();
   window.setTimeout(draw, 100);    // wait 100ms for resources to load then start draw loop
@@ -40,6 +39,7 @@ class Game {
     this.context = this.canvas.getContext("2d");
     if(!this.context)
         throw "No valid context found!";
+  //  document.getElementById('canDiv').style.backgroundImage = "url('images/spritesheets/gameImages/bg/bg.png')";
     this.lastTime = Date.now();
     //select everything of type/class and set call backs
     this.tileDivs = this.createTileDivs();
@@ -66,12 +66,20 @@ class Game {
     this.loadGrid();
     this.root = this.grid[this.cols - 1][this.rows -1];
     this.brushfire();
+
+    this.sprites = [];
+    this.loadSprites();
 }
 
   // The success callback when a tower canvas image
   // or bullet image has loaded.  Hide them from
   // displaying on the page.
   hideImgElement() { this.style.display = "none"; }
+
+  loadSprites(){
+    //  this.sprites.push(new Sprite(new vector2d(20, 500), 100, 100, fullJSON, "images/spritesheets/demop7/spritesheet.png", "b", true));
+    //  this.sprites.push(new Sprite(new vector2d(50, 500), 100, 100, fullJSON, "images/spritesheets/demop7/spritesheet.png", "e20000", false));
+  }
 
   run() { // called from draw()
     let gt = this.updateGameTime();
@@ -98,6 +106,9 @@ class Game {
     for (let i = 0; i < this.bullets.length; i++) {
       this.bullets[i].run();
     }
+    for (let i = 0; i < this.sprites.length; i++){
+      this.sprites[i].run();
+    }
 
     // some help text in the bottom left of the canvas
     this.context.save();
@@ -109,7 +120,6 @@ class Game {
 
   render() { // draw game stuff
     this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
-
   }
 
       // brushfire()
@@ -198,7 +208,9 @@ class Game {
                 }
             if(j < 3) { // if we found a valid cell to start the enemy
                 let randomPath = Math.floor(Math.random() * 2);    // about half
-                this.enemies.push(new Enemy(this, startCell, randomPath));
+                // loc, w, h, json, spritesheet, propertyName, isAnAnimation, game, startCell, randomPath
+                this.enemies.push(new Enemy(startCell.center.copy(), 20, 20, fullJSON, "images/spritesheets/demop7/spritesheet.png", "e10000", false, this, startCell, randomPath));
+                //this.enemies.push(new Enemy(this, startCell, randomPath));
                 }
             }
     }
@@ -207,10 +219,9 @@ class Game {
     removeEnemies() {
       for(let i = this.enemies.length-1; i >= 0; i--) {
         if(this.enemies[i].kill)
-            this.enemies.splice(i,1);   // delete this dead enemy
-        else this.enemies[i].run();
-        }
+            this.enemies.splice(i,1);
     }
+  }
 
   removeBullets(){
     if(this.bullets.length < 1) return;
@@ -253,9 +264,6 @@ class Game {
       this.grid[i] = [];
       for(var j = 0; j < this.rows; j++){
         this.grid[i][j] = new Cell(this, vector2d((i*this.w), (j*this.w)), ++cellId);
-        // make 10% of the cells occupied
-        if(this.grid[i][j] != this.root && Math.floor(Math.random()*100) < 10)
-            this.grid[i][j].occupied = true;
       }
     }
 
@@ -269,17 +277,11 @@ class Game {
   // canvas.
   createTileDivs(){
     var tiles = [];
-    var count = 0;
-    var x;
-    var y;
 
     for(var i = 0; i < 5; i++){
       var mtd = document.createElement("div"); // createDiv("");
-      var img = new Image();
-    //  img.src = "enemy.png";
-      img.onload = draw;
       var cnvTurImgPath = "tow" + (i+1) + "s.png";  // small tower image for canvas
-      var cnvBulImgPath = "b" + (i+1) + ".png";     // bullet   for canvas
+      var cnvBulImgPath = "b" + (i+1) + ".png";     // bullet image for canvas
       mtd.cnvTurImg = new Image();
       mtd.cnvTurImg.addEventListener('load',this.hideImgElement,false);
       mtd.cnvTurImg.addEventListener('error', function() { console.log(cnvTurImgPath + " failed to load"); }, false);
@@ -322,7 +324,8 @@ class Game {
   createTower(mtd) { // menu turret div
     // create a new tower object and add to array list
     // the menu tower div contains the parameters for the tower
-    var tower = new Tower( mtd.cost, mtd.cnvTurImg, mtd.cnvBulImg);
+    var tower = new Tower(vector2d(0,0), 50, 50, fullJSON, "images/spritesheets/demop7/spritesheet.png", "t10000", false, mtd.cost);
+  //  var tower = new Tower( mtd.cost, mtd.cnvTurImg, mtd.cnvBulImg);
     if(tower)
       this.towers.push(tower); // add tower to the end of the array of towers
     else {
@@ -384,7 +387,7 @@ class Game {
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++    mouse handlers
   handleCNVMouseOver() {
     if(towerGame.towers.length < 1) return;
-    towerGame.towers[towerGame.towers.length-1].visible = true;
+      towerGame.towers[towerGame.towers.length-1].visible = true;
   }
 
   handleCNVMouseMoved(event) {

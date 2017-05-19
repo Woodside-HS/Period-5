@@ -1,33 +1,22 @@
-class Enemy {
+'use strict'
 
-  constructor(game, startCell, randomPath) {
-    this.game = game;
-    this.currentCell = startCell;
-    this.loc = startCell.center.copy();
-    this.randomPath = randomPath;   //boolean to randomize or not
-    this.radius = 3.0;
-    this.vel = 3.0;       // velocity factor
-    this.targetCell = this.nextTarget();
-    this.target =  this.targetCell.center;
-    var targetVec = this.target.copy().sub(this.loc);
-    this.velVec = targetVec.copy().normalize().scale(this.vel);      // initial velocity vector
-    this.kill = false;
+class Enemy extends Sprite {
 
-    this.img = new Image();
-    this.img.src = "images/spritesheets/enemy.png";
-    this.img.addEventListener('error', function() { console.log(this.img.src + " failed to load"); }, false);
+  constructor(loc, w, h, json, spritesheet, propertyName, isAnAnimation, game, startCell, randomPath){
+      super(loc, w, h, json, spritesheet, propertyName, isAnAnimation);
+      this.game = game;
+      this.currentCell = startCell;
+      this.loc = loc;
+      this.randomPath = randomPath;
+      this.radius = 3.0;
+      this.vel = 3.0;
+      this.targetCell = this.nextTarget();
+      this.target = this.targetCell.center;
+      var targetVec = this.target.copy().sub(this.loc);
+      this.velVec = targetVec.copy().normalize().scale(this.vel);      // initial velocity vector
+      this.kill = false;
   }
 
-  run() {
-    this.update();
-    this.render();
-  }
-
-  // nextTarget()
-  // Return the next cell in the path to the root target
-  // The parent of the current cell is always the optimal path
-  // If we want some randomness in the path, choose from among all
-  // the neighbor cells with a lesser distance to the root.
   nextTarget() {
     if(!this.randomPath)
         return(this.currentCell.parent);    // the parent cell is always the shortest path
@@ -42,28 +31,11 @@ class Enemy {
         }
     }
 
-  // render()
-  // Draw the enemy at its current location
-  // Enemies with a randomized path are blue and
-  // enemies with an optimal path are green
-  render() {
+  draw(){
     var ctx = this.game.context;
-
-
-    // if(this.randomPath)
-    //     ctx.fillStyle = 'blue';
-    // else ctx.fillStyle = 'green';
-    // ctx.beginPath();
-    // ctx.ellipse(this.loc.x, this.loc.y, this.radius, this.radius, 0, 2*Math.PI, false);
-    // ctx.fill();
+    ctx.drawImage(this.frames[this.currentIndex], this.frames[this.currentIndex].info.x, this.frames[this.currentIndex].info.y, this.frames[this.currentIndex].info.w, this.frames[this.currentIndex].info.h, this.loc.x-this.w/2, this.loc.y-this.h/2, this.w, this.h);
   }
 
-    // update()
-    // Calculate a new location for this enemy.
-    // If has reached the root cell, kill it
-    // If it has reached the current target along the path,
-    // find a new target and rotate the velocity in the direaction
-    // of the new target.
   update() {
     if(this.loc.dist(this.target) <= this.radius*4) {    // if we have reached the current target
         this.currentCell = this.targetCell;
