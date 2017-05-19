@@ -5,8 +5,8 @@ class RedEnemy extends Enemy {
       this.col = 'red';
       this.health = 500;     // initial velocity vector
       this.kill = false;
-      this.vel = 2.8;
-      this.initialVel = 2.8;
+      this.vel = 1.8;
+      this.initialVel = 1.8;
       //console.log("add Red");
       }
 

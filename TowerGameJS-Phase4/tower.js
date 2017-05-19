@@ -43,14 +43,16 @@ class Tower {
   update() {
     //  Rotate turret to follow mouse
     if(towerGame.enemies.length != 0){
-    if(this.dist(towerGame.enemies[this.currentIndex].loc) < 300){
-
-    } else {
-
+    if( this.currentIndex < towerGame.enemies.length && this.dist(towerGame.enemies[this.currentIndex].loc) < 300){
+    //  console.log("HI");
+    } else if(this.currentIndex < towerGame.enemies.length){
+  //    console.log("switch");
       this.currentIndex ++;
+
     }
+    //console.log(this.currentIndex);
   }
-    if(towerGame.enemies.length != 0 && towerGame.enemies[this.currentIndex].loc != undefined){
+    if(towerGame.enemies.length != 0 && this.currentIndex < towerGame.enemies.length && towerGame.enemies[this.currentIndex].loc != undefined){
       this.enX = towerGame.enemies[this.currentIndex].loc.x;
       this.enY = towerGame.enemies[this.currentIndex].loc.y;
 
@@ -69,7 +71,7 @@ class Tower {
   dist(f){
     this.xx = this.loc.x - f.x;
     this.yy = this.loc.y - f.y;
-    return Math.atan2(this.yy, this.xx);
+    return Math.sqrt(this.xx*this.xx + this.yy*this.yy);
   }
 
   checkEnemies(){ //  dist < 200
@@ -89,15 +91,16 @@ class Tower {
            towerGame.bullets.push(b);
         }
     }
-    if(towerGame.enemies.length != 0)
+    if(towerGame.enemies.length != 0 &&  this.currentIndex < towerGame.enemies.length)
       towerGame.closeForRay = towerGame.enemies[this.currentIndex].loc
     if(this.ability == "ray" && towerGame.enemies.length != 0 && towerGame.closeForRay != undefined && towerGame.closestIndex < towerGame.enemies.length  ){
       var a3 = this.loc.x - towerGame.closeForRay.x;
       var b3 = this.loc.y - towerGame.closeForRay.y;
       var k = Math.sqrt(a3*a3 + b3*b3);
-      if( k < 400 && towerGame.enemies.length != 0){
+      if( k < 300 && towerGame.enemies.length != 0){
       var rys = new LockOn(this.loc, towerGame.closeForRay);
       rys.run();
+      if(this.currentIndex < towerGame.enemies.length)
      towerGame.enemies[this.currentIndex].isLocked = true;//health -=  10;
     } else {
       towerGame.rays = [];

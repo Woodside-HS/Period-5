@@ -2,7 +2,7 @@ class Explosives{
 
   constructor(location){
     // issue#1 use preloaded bullet image instead of loadImage
-
+    this.shape = "circle";
     this.loc = location;
     this.start = 5.0;
     this.radius = this.start;

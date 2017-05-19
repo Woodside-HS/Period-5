@@ -22,15 +22,15 @@ function draw() {   // the animation loop
 class Game {
   //  This is a test
   constructor() {
-    this.enemyThrees;
-    this.enemyTwos;
     this.checkOnce = true;// from setup()
     this.addEnemyTimer = 60;
     this.stopped = 0;
     this.isRunning = true;
     this.enemyNum = 5;
-    this.enemyTwoNum = -4;
-    this.enemyThreeNum = -9;
+    this.enemyTwoNum = -3;
+    this.enemyThreeNum = -5;
+    this.enemyFourNum = -6;
+    this.enemyFiveNum = -7;
     this.timeSpawn = 0;
     this.enemyTwo = [];
     this.placingTower = false;
@@ -66,11 +66,8 @@ class Game {
     this.canvas.addEventListener('click', this.handleCNVMouseClicked, false);
 
     window.addEventListener('keypress', function(evt) {
-        if(evt.key == "E" || evt.key == "e" && towerGame.enemyTwo.length == 0 && towerGame.enemies.length == 0){
+        if(evt.key == "E" || evt.key == "e" && towerGame.enemyTwo.length == 0 && towerGame.enemies.length == 0)
             towerGame.sendEnemies();
-            towerGame.sendEnemyTwo();
-            towerGame.sendEnemyThree();
-          }
         }, false);
 
     this.mouseX = 0;
@@ -98,7 +95,7 @@ class Game {
   loadSprites(){
       for (let i = 0; i < 1; i++){
     //    console.log(json);
-        //this.sprites.push(new Sprite(new vector2d(20,500), 50, 100, json));
+      //  this.sprites.push(new Sprite(new vector2d(20,500), 50, 100, json));
       }
   }
 
@@ -144,9 +141,9 @@ class Game {
     for (let i = 0; i < this.enemyTwo.length; i++) {
       this.enemyTwo[i].run();
     }
-    for (let i = 0; i < this.sprites.length; i++){
-      this.sprites[i].run();
-    }
+  //  for (let i = 0; i < this.sprites.length; i++){
+    //  this.sprites[i].run();
+  //  }
 
 
 
@@ -301,21 +298,30 @@ class Game {
     //addEnemyTimer = (stopped > 40) ? 20 : 30;
 
     updateWaves(){
-      console.log(this.enemies.length);
       if(this.timeSpawn > 0 && this.enemies.length == 0 && this.checkOnce){
        this.enemyNum += 3;
         this.enemyTwoNum +=2;
-      //  console.log(this.wave);
+        console.log(this.wave);
         //if(this.wave > 4){
           this.enemyThreeNum += 1;
+          this.enemyFourNum += 1;
+          this.enemyFiveNum += 1;
       //  }
         this.checkOnce = false;
       }
       this.wave++;
     }
-
+    addEnemiesFive(){
+        this.enemies.push(new YellowEnemy(this, this.grid[0][0], 0));
+        console.log("five");
+    }
+    addEnemiesFour(){
+        this.enemies.push(new PurpleEnemy(this, this.grid[0][0], 0));
+        console.log("four");
+    }
     addEnemiesThree(){
         this.enemies.push(new RedEnemy(this, this.grid[0][0], 0));
+        console.log("three");
     }
     addEnemiesTwo(){
       this.enemies.push(new GreenEnemy(this, this.grid[0][0], 0));
@@ -333,41 +339,52 @@ class Game {
       }
     }
     sendEnemies() {
-      var numEnemies = Math.random() * 5;     // up to 5 enemies
-      var row, col, startCell, i, j;
 
-      for(var i = 0; i < this.enemyNum; i++){
+        var numEnemies = Math.random() * 5;     // up to 5 enemies
+        var row, col, startCell, i, j;
+
+        for(var i = 0; i < this.enemyNum; i++){
+          setTimeout(function(){
+            towerGame.addEnemies();
+          }, 200 * i);
+
+      }
+      if(this.enemyTwoNum > 0){
+      for(var i = 0; i < this.enemyTwoNum; i++){
         setTimeout(function(){
-      //console.log("one");
-        towerGame.addEnemies();
-      }, 100 * i);
-    }
+          towerGame.addEnemiesTwo();
+        }, 200 * i);
 
+    }
+  }
+
+  if(this.enemyThreeNum > 0){
+    for(var i = 0; i < this.enemyThreeNum; i++){
+      setTimeout(function(){
+        towerGame.addEnemiesThree();
+      }, 200 * i);
+
+    }
+  }
+  if(this.enemyFourNum > 0){
+    console.log("purps");
+    for(var i = 0; i < this.enemyFourNum; i++){
+      setTimeout(function(){
+        towerGame.addEnemiesFour();
+      }, 200 * i);
+
+    }
+  }
+  if(this.enemyFiveNum > 0){
+    for(var i = 0; i < this.enemyFiveNum; i++){
+      setTimeout(function(){
+        towerGame.addEnemiesFive();
+      }, 200 * i);
+
+    }
+  }
       this.timeSpawn++;
       //console.log(this.timeSpawn);//this.enemies.length);
-    }
-
-    sendEnemyTwo(){
-      if(this.enemyTwoNum > 0){
-        for(var i = 0; i < this.enemyTwoNum; i++){
-          setTimeout(function(){
-          //  console.log("two");
-            towerGame.addEnemiesTwo();
-          }, 100 * i);
-          }
-        }
-    }
-
-    sendEnemyThree(){
-      if(this.enemyThreeNum > 0){
-        for(var i = 0; i < this.enemyThreeNum; i++){
-          setTimeout(function(){
-            //console.log("three");
-            towerGame.addEnemiesThree();
-          }, 100 * i);
-
-        }
-      }
     }
 
     // Delete any enemies that have died
@@ -384,10 +401,6 @@ class Game {
             this.enemyTwo.splice(i, 1);
           else this.enemyTwo[i].run();
         }
-
-
-
-
   }
 
   removeBullets(){
@@ -436,8 +449,8 @@ class Game {
       for(var j = 0; j < this.rows; j++){
         this.grid[i][j] = new Cell(this, vector2d((i*this.w), (j*this.w)), ++cellId);
         // make 10% of the cells occupied
-        if(this.grid[i][j] != this.root && Math.floor(Math.random()*100) < 8 && i != 0 && i!=10)
-            this.grid[i][j].occupied = true;
+        //if(this.grid[i][j] != this.root && Math.floor(Math.random()*100) < 8 && i != 0 && i!=10)
+        //    this.grid[i][j].occupied = true;
 
       }
     }
@@ -471,18 +484,23 @@ class Game {
       document.getElementById("menuDiv").appendChild(mtd);
       if(i == 0){
         mtd.ability = "normal";
+//        this.bankValue = 200;
 
       } else if(i == 1){
         mtd.ability = "fast";
+      //  this.bankValue = 500;
 
       } else if(i == 2){
         mtd.ability = "freeze";
+      //  this.bankValue = 300;
 
       } else if(i == 3){
         mtd.ability = "explosive";
+      //  this.bankValue = 700;
 
       } else {
         mtd.ability = "ray";
+      //  this.bankValue = 1000;
       }
       mtd.cost = 100*i +50;
       mtd.id = 'towImgDiv' + i;
@@ -568,8 +586,10 @@ class Game {
   tileClicked() {
     //if user clicks tile and not placing tile change placing to true
     // can add Tower checks cost and other conditions
+    console.log(towerGame.getBankValue());
     if(towerGame.placingTower === true) return;
     if (towerGame.getBankValue() > 100) {
+      console.log("idk");
       towerGame.createTower(this);
       towerGame.placingTower = true;
     }
