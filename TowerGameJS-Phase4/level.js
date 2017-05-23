@@ -8,6 +8,9 @@ class Level {
         this.number = number;
         this.cnv = canvas;
         this.init();  
+        this.panelStart = new Panel(this, 0);
+        this.panelInstructions = 0;
+        this.panelQuit = 0;
     }
     
     init() {    
@@ -25,6 +28,12 @@ class Level {
         this.render();
         this.handleTowers();
         this.handleEnemies();
+        if (this.panelStart) {
+          this.panelStart.render();
+        }
+        if (this.panelInstructions)) {
+          this.panelInstructions.render();
+        }
     }
     
   
