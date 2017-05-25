@@ -49,6 +49,8 @@ class Game {
     this.bullets = [];
     this.closestIndex;
     this.bankValue = 500;
+    this.destroyed = 0;
+    this.score = 0;
     this.canvas = document.createElement("canvas");
     if(!this.canvas || !this.canvas.getContext)
         throw "No valid canvas found!";
@@ -168,7 +170,22 @@ class Game {
     this.context.font = "14px sans-serif";
     this.context.fillText("Press the E key to send enemies", 20, this.canvas.height-20);
     this.context.restore();
+<<<<<<< HEAD
     */
+=======
+
+	for(var i = this.enemies.length - 1; i >= 0; i--){
+      for(var j = this.bullets.length - 1; j >= 0; j--){
+        if(this.circlePointCollision(this.bullets[j].loc.x, this.bullets[j].loc.y, this.enemies[i].loc.x, this.enemies[i].loc.y, this.enemies[i].radius, 2.2)){
+          this.bullets.splice(j, 1);
+          this.enemies[i].kill = true;
+          this.destroyed++;
+          this.score++;
+          if(this.score % 10 === 0) this.bankValue = this.bankValue + 10;
+        }
+      }
+    }
+>>>>>>> master
   }
 
   render() { // draw game stuff
@@ -510,8 +527,15 @@ class Game {
         info.innerHTML = 'Bank <br/>' + this.bankValue;
       }else if(info.innerHTML.indexOf('Time') != -1){
         info.innerHTML = 'Time <br/>' + time;
+<<<<<<< HEAD
       } else if( info.innerHTML.indexOf('Wave') != -1){
         info.innerHTML = 'Wave <br/>' + this.timeSpawn;
+=======
+      }else if(info.innerHTML.indexOf('Destroyed') != -1){
+        info.innerHTML = 'Destroyed <br/>' + this.destroyed;
+      }else if(info.innerHTML.indexOf('Score') != -1){
+        info.innerHTML = 'Score <br/>' + this.score;
+>>>>>>> master
       }
     }
   }
@@ -541,6 +565,80 @@ class Game {
 
 
   }  // ++++++++++++++++++++++++++++++++++++++++++++++  End LoadGrid
+
+  //check for collision between point, circle or square
+  //*****both shapes must have r if circle, w if rect, loc vector*****
+  // checkCollide(shape1, shape2) {
+  //   if(shape1.shape === "circle") {
+  //     if(shape2.shape === "circle") {
+  //       //circle-circle
+  //       if(shape1.r + shape2.r >= vector2d.dist(shape1.loc, shape2.loc)) return true;
+  //       return false;
+  //     } else if(shape2.shape === "square") {
+  //       //circle-square
+  //       let topLeft = shape2.loc;
+  //       let topRight = new vector2d(shape2.loc.x + shape2.w, shape2.loc.y);
+  //       let bottomRight = new vector2d(shape2.loc.x + shape2.w, shape2.loc.y + shape2.w);
+  //       let bottomLeft = new vector2d(shape2.loc.x, shape2.loc.y +_shape2.w);
+  //       let dist1 = vector2d.dist(topLeft, shape1.loc);
+  //       let dist2 = vector2d.dist(topRight, shape1.loc);
+  //       let dist3 = vector2d.dist(bottomRight, shape1.loc);
+  //       let dist4 = vector2d.dist(bottomLeft, shape1.loc);
+  //       if(dist1 <= shape1.r || dist2 <= shape1.r || dist3 <= shape1.r || dist4 <= shape1.r) return true;
+  //       return false;
+  //     } else if(shape2.shape === "point") {
+  //       //circle-point
+  //       if(shape1.r >= vector2d.dist(shape1.loc, shape2.loc)) return true;
+  //       return false;
+  //     } else {
+  //       throw "shape2 shape not acceptable.";
+  //     }
+  //
+  //   } else if(shape1.shape === "square") {
+  //     if(shape2.shape === "circle") {
+  //       //square-circle
+  //       let topLeft = shape1.loc;
+  //       let topRight = new vector2d(shape1.loc.x + shape1.w, shape1.loc.y);
+  //       let bottomRight = new vector2d(shape1.loc.x + shape1.w, shape1.loc.y + shape1.w);
+  //       let bottomLeft = new vector2d(shape1.loc.x, shape1.loc.y + shape1.w);
+  //       let dist1 = vector2d.dist(topLeft, shape2.loc);
+  //       let dist2 = vector2d.dist(topRight, shape2.loc);
+  //       let dist3 = vector2d.dist(bottomRight, shape2.loc);
+  //       let dist4 = vector2d.dist(bottomLeft, shape2.loc);
+  //       if(dist1 <= shape2.r || dist2 <= shape2.r || dist3 <= shape2.r || dist4 <= shape2.r) return true;
+  //       return false;
+  //     } else if(shape2.shape === "square") {
+  //       //square-square
+  //       if (shape1.loc.x < shape2.loc.x + shape2.w &&
+  //         shape1.loc.x + shape1.w > shape2.loc.x &&
+  //         shape1.loc.y < shape2.loc.y + shape2.w &&
+  //         shape1.w + shape1.loc.y > shape2.loc.y) {
+  //           return true;
+  //       }
+  //       return false;
+  //     } else if(shape2.shape === "point") {
+  //       //square-point
+  //     } else {
+  //       throw "shape2 shape not acceptable.";
+  //     }
+  //   } else if(shape1.shape === "point") {
+  //     if(shape2.shape === "circle") {
+  //       //point-circle
+  //       if(shape2.r >= vector2d.dist(shape2.loc, shape1.loc)) return true;
+  //       return false;
+  //     } else if(shape2.shape === "square") {
+  //       //point-square
+  //     } else if(shape2.shape === "point") {
+  //       //point-point
+  //       if(vector2d.dist(shape2.loc, shape1.loc) < 1) return true;
+  //       return false;
+  //     } else {
+  //       throw "shape2 shape not acceptable.";
+  //     }
+  //   } else {
+  //     throw "shape1 shape not acceptable.";
+  //   }
+  // }
 
 
 
@@ -587,6 +685,7 @@ class Game {
       //  this.bankValue = 1000;
       }
       mtd.cost = 100*i +50;
+      console.log(mtd.cost);
       mtd.id = 'towImgDiv' + i;
       tiles.push(mtd);
       var imgName = 'tow' + i + '.png'; // large image for menu tile
@@ -672,9 +771,14 @@ class Game {
     // can add Tower checks cost and other conditions
     console.log(towerGame.getBankValue());
     if(towerGame.placingTower === true) return;
+<<<<<<< HEAD
     if (towerGame.getBankValue() > 100) {
       console.log("idk");
+=======
+    if (towerGame.getBankValue() >= this.cost) {
+>>>>>>> master
       towerGame.createTower(this);
+      towerGame.bankValue -= this.cost;
       towerGame.placingTower = true;
     }
 
@@ -712,5 +816,78 @@ class Game {
         towerGame.brushfire();   // all new distances and parents
         }
   }
+
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  //collision detection utilities
+  distance(c0, c1){
+      this.x0 = c0.x;
+      this.y0 = c0.y;
+      this.x1 = c1.x;
+      this.y1 = c1.y;
+
+      var dx = this.x1 - this.x0;
+      var dy = this.y1 - this.y0;
+
+      return Math.sqrt(dx * dx + dy * dy);
+
+    }
+
+    distanceXY(x0, y0, x1, y1){
+      var dx = x1 - x0;
+      var dy = y1 - y0;
+
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    inRange(value, min, max){
+      return value >= Math.min(min, max) && Math.max(min, max) <= Math.max(min, max);
+    }
+
+  //parameters:
+  //loc1 = location vector of first circle
+  //loc2 = location vector of second circle
+  //rad1 = radius of first circle
+  //rad2 = radius of second circle
+    circleCollision(loc1, loc2, rad1, rad2){
+      if(this.distance(loc1, loc2) <= rad1 + rad2){
+        return true;
+      }
+    }
+
+    //parameters:
+    //x, y = locations of point
+    //circx, circy = locations of circle
+    //radius = radius of circle
+    circlePointCollision(x, y, circx, circy, radius, multiplier){
+      if(this.distanceXY(x, y, circx, circy) < (radius * multiplier)){
+        return true;
+      }
+    }
+
+    //parameters:
+    //x, y = locations of point
+    //loc = location vector of rectangle
+    //rect width, height = width and height of rectangle
+    rectanglePointCollision(x, y, loc, rectWidth, rectHeight){
+      if(this.inRange(x, loc.x, loc.x + rectWidth) && inRange(y, loc.y, loc.y + rectHeight)){
+        return true;
+      }
+    }
+
+
+    range(min0, max0, min1, max1){
+      return Math.max(min0, max0) >= Math.min(min1, max1) && Math.min(min0, max0) <= Math.max(min1, max1);
+    }
+
+
+    //parameters:
+    //loc1 = location vector of first rectangle
+    //loc2 = location vector of second rectangle
+    rectangleCollision(loc1, rectWidth1, rectHeight1, loc2, rectWidth2, rectHeight2){
+      if(this.range(loc1.x, loc1.x + rectWidth1, loc2.x, loc2.x + rectWidth2) &&
+      this.range(loc1.y, loc1.y + rectHeight1, loc2.y, loc2.y + rectHeight2)){
+    return true;
+  }
+    }
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Other
 } // end Game class +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

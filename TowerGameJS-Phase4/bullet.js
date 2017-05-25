@@ -13,14 +13,15 @@ class Bullet{
     this.img = bImg;
     this.start = location;
 
+
   }
 
   run(){
     this.render();
     this.update();
   }
-  render(){
 
+  render() {
     var ctx = towerGame.context;
     ctx.save();
     ctx.translate(this.loc.x, this.loc.y);

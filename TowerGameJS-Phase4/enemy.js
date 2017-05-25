@@ -6,6 +6,7 @@ class Enemy {
     this.currentCell = startCell;
     this.loc = startCell.center.copy();
     this.randomPath = randomPath;   //boolean to randomize or not
+
     this.radius = 3.0;
     this.r = 3.0;
     this.isLocked = false;
@@ -18,6 +19,7 @@ class Enemy {
      this.coolDown = 1000;
        // velocity factor
     this.towerLoc =  vector2d(0, 0);
+
     this.targetCell = this.nextTarget();
     this.target =  this.targetCell.center;
     this.targetVec = this.target.copy().sub(this.loc);
@@ -27,6 +29,7 @@ class Enemy {
     this.kill = false;
     this.slowVel= this.initialVel - .8;
     this.damages = 0;
+
     this.img = new Image();
     this.img.src = "images/spritesheets/enemy.png";
   //  this.img.addEventListener('error', function() { console.log(this.img.src + " failed to load"); }, false);
@@ -65,6 +68,7 @@ class Enemy {
 
 
 
+<<<<<<< HEAD
     // if(this.randomPath)
      this.ctx.fillStyle = this.col;
     // else this.ctx.fillStyle = 'green';
@@ -80,6 +84,7 @@ class Enemy {
     this.yy = a.y - b.y;
   //  console.log( Math.sqrt(this.xx*this.xx + this.yy*this.yy));
     return Math.sqrt(this.xx*this.xx + this.yy*this.yy);
+
   }
 
     // update()
@@ -177,6 +182,9 @@ class Enemy {
 
           //this.health = this.health - 10;
           if(this.health <= 0){
+            this.destroyed++;
+            this.score++;
+            if(this.score % 10 === 0) this.bankValue = this.bankValue + 10;
             this.kill = true;
           }
           this.locations = this.loc;
@@ -221,6 +229,9 @@ class Enemy {
   }
 //  console.log(this.health);
   if(this.health <= 0){
+    this.destroyed++;
+    this.score++;
+    if(this.score % 10 === 0) this.bankValue = this.bankValue + 10;
     this.kill = true;
     //console.log("kills");
   }
