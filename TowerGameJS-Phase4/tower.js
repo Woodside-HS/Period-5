@@ -5,6 +5,7 @@ class Tower {
   constructor( cost, tImg, bImg, ability) {
     this.loc = vector2d(0, 0);
     this.placed = false;
+    this.shape = "circle";
     this.enX= 0;
     this.enY =0;
     this.pastIndex;
@@ -24,7 +25,7 @@ class Tower {
     else
       this.coolDown = 100;
     this.ability = ability;
-    //console.log(this.coolDown);
+    console.log(this.ability);
   }
   run() {
     this.render();
@@ -88,6 +89,7 @@ class Tower {
           let b = new Bullet(bulletLocation , this.bulletImg, this.towAngle, this.ability);
           //console.log(this.ability);
           if(this.ability != "freeze"){
+            console.log("shoot");
            towerGame.bullets.push(b);
         }
     }

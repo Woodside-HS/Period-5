@@ -22,6 +22,7 @@ function draw() {   // the animation loop
 class Game {
   //  This is a test
   constructor() {
+    this.i = 0;
     this.checkOnce = true;// from setup()
     this.addEnemyTimer = 60;
     this.stopped = 0;
@@ -39,6 +40,7 @@ class Game {
     this.closeForRay;
     this.gameTime = 0;
     this.towers = [];
+    this.fullEnemyArray = [];
     this.rays = [];
     this.wave = 0;
     this.explosiveBullets = [];
@@ -52,11 +54,14 @@ class Game {
         throw "No valid canvas found!";
     this.canvas.width = 900;
     this.canvas.height = 750;
-    document.getElementById('canDiv').appendChild(this.canvas);
+    this.canvas.canDiv=document.getElementById('canDiv')
+    this.canvas.canDiv.appendChild(this.canvas);
     this.context = this.canvas.getContext("2d");
     if(!this.context)
         throw "No valid context found!";
     this.lastTime = Date.now();
+    this.spawnTimer = Date.now();
+
     //select everything of type/class and set call backs
     this.tileDivs = this.createTileDivs();
     this.loadDOMCallBacks(this.tileDivs);
@@ -68,12 +73,17 @@ class Game {
     window.addEventListener('keypress', function(evt) {
         if(evt.key == "E" || evt.key == "e" && towerGame.enemyTwo.length == 0 && towerGame.enemies.length == 0)
             towerGame.sendEnemies();
+
         }, false);
 
     this.mouseX = 0;
     this.mouseY = 0;
     this.w = 20;
     this.done = false;
+    this.level= new Level1(this)
+    //panelthings
+    this.panelStart = new Panel(this, 100,-500,"panelStart")
+    this.panelStart.createButtons()
     // containerarrays for cells
     this.grid = [];
     this.cols = Math.floor(this.canvas.width / this.w);
@@ -99,7 +109,11 @@ class Game {
       }
   }
 
-  run() { // called from draw()
+  run() {
+
+    this.level.run();
+  // called from draw()
+  /*
     let gt = this.updateGameTime();
     this.updateInfoElements(gt);
     this.removeBullets();
@@ -154,6 +168,7 @@ class Game {
     this.context.font = "14px sans-serif";
     this.context.fillText("Press the E key to send enemies", 20, this.canvas.height-20);
     this.context.restore();
+    */
   }
 
   render() { // draw game stuff
@@ -308,29 +323,35 @@ class Game {
           this.enemyFiveNum += 1;
       //  }
         this.checkOnce = false;
+        this.i = 0;
       }
       this.wave++;
     }
     addEnemiesFive(){
         this.enemies.push(new YellowEnemy(this, this.grid[0][0], 0));
+        //this.fullEnemyArray.push(new YellowEnemy(this, this.grid[0][0], 0));
         console.log("five");
     }
     addEnemiesFour(){
         this.enemies.push(new PurpleEnemy(this, this.grid[0][0], 0));
+      //  this.fullEnemyArray.push(new PurpleEnemy(this, this.grid[0][0], 0));
         console.log("four");
     }
     addEnemiesThree(){
         this.enemies.push(new RedEnemy(this, this.grid[0][0], 0));
+        //this.fullEnemyArray.push(new RedEnemy(this, this.grid[0][0], 0));
         console.log("three");
     }
     addEnemiesTwo(){
       this.enemies.push(new GreenEnemy(this, this.grid[0][0], 0));
+      //this.fullEnemyArray.push(new GreenEnemy(this, this.grid[0][0], 0));
     }
     addEnemies(){
       this.checkOnce = true;
     try{
 
       this.enemies.push(new Enemy(this, this.grid[0][0], 0));
+      //this.fullEnemyArray.push(new Enemy(this, this.grid[0][0], 0));
 
 
       //  alert('VIDEO HAS STOPPED');
@@ -338,12 +359,74 @@ class Game {
       console.log(e);
       }
     }
+
+    loadEnemies(){
+      var numEnemies = Math.random() * 5;     // up to 5 enemies
+      var row, col, startCell, i, j;
+
+      if(this.enemyFiveNum > 0){
+        for(var i = 0; i < this.enemyFiveNum; i++){
+        towerGame.addEnemiesFive();
+      }
+    }
+      if(this.enemyFourNum > 0){
+        for(var i = 0; i < this.enemyFourNum; i++){
+          towerGame.addEnemiesFour();
+        }
+      }
+      if(this.enemyThreeNum > 0){
+        for(var i = 0; i < this.enemyThreeNum; i++){
+          towerGame.addEnemiesThree();
+        }
+      }
+      if(this.enemyTwoNum > 0){
+        for(var i = 0; i < this.enemyTwoNum; i++){
+        towerGame.addEnemiesTwo();
+        }
+      }
+
+      for(var i = 0; i < this.enemyNum; i++){
+          towerGame.addEnemies();
+        }
+        //console.log(this.fullEnemyArray.length);
+      while(this.i < this.fullEnemyArray.length){
+          this.milliss = Date.now();
+          if( this.milliss - this.spawnTimer> 200){
+            this.spawnTimer = this.milliss;
+            towerGame.enemies.push(towerGame.fullEnemyArray[this.i]);
+            //towerGame.sendEnemies(this.i);
+            console.log("spawn");
+            this.i++;
+          }
+        }
+/*
+        for(var i = 0; i < this.fullEnemyArray.length; i++){
+            towerGame.sendEnemies(i);
+        //    console.log("adsf");
+      } */
+      //  console.log("his");
+
+
+
+
+    }
     sendEnemies() {
+        //console.log(towerGame.fullEnemyArray[0]);
+      //for(var i = 0; i < towerGame.fullEnemyArray.length; i++){
+    //  setTimeout(function(){
+      //  towerGame.enemies.push(towerGame.fullEnemyArray[i]);
+    //  }, 150 * i);
+  //    console.log("ok" + i);
 
-        var numEnemies = Math.random() * 5;     // up to 5 enemies
-        var row, col, startCell, i, j;
 
-        for(var i = 0; i < this.enemyNum; i++){
+
+
+
+
+
+        //////////////////////////////////////////////////
+
+      for(var i = 0; i < this.enemyNum; i++){
           setTimeout(function(){
             towerGame.addEnemies();
           }, 200 * i);
@@ -389,6 +472,7 @@ class Game {
 
     // Delete any enemies that have died
     removeEnemies() {
+    //  console.log(this.enemies[0]);
       for(let i = this.enemies.length-1; i >= 0; i--) {
         if(this.enemies[i].kill)
 

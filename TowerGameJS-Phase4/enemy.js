@@ -29,7 +29,7 @@ class Enemy {
     this.damages = 0;
     this.img = new Image();
     this.img.src = "images/spritesheets/enemy.png";
-    this.img.addEventListener('error', function() { console.log(this.img.src + " failed to load"); }, false);
+  //  this.img.addEventListener('error', function() { console.log(this.img.src + " failed to load"); }, false);
   }
 
   run() {
