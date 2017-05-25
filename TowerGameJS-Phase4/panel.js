@@ -1,36 +1,46 @@
 "use strict"
 class Panel{
-  constructor(game, number){
-      this.game = game
+<<<<<<< HEAD
+  constructor(game, x,y, id){
+      this.x = x
+      this.y = y
+      this.pImg = new Image();
+      this.pImg.addEventListener('error', function() { console.log(this.imgName + " failed to load"); }, false);
+      this.game=game
+      this.imgName = "pan.png"; // large image for menu tile
+      this.pImg.src = this.imgName;
+      this.thing = document.createElement("div")
+      this.thing.id = id
+      this.thing.style.width = 450+"px"
+      this.thing.style.height = 290+"px"
+      this.thing.style.position = "absolute"
+      this.thing.style.backgroundImage = 'url("pan.png")'
+      this.thing.style.top = this.y+"px"
+      //this.thing.style.left = this.x+"px"
+      this.thing.style.textAlign = "center"
+      this.thing.align = "center"
+      document.getElementById('wrapperDiv').appendChild(this.thing)
+      //this.thing.appendChild(this.pImg);
       this.temp = 0
-      this.y = -290
-      this.panel = document.createElement("div")
-      this.panel.id = panelJSON[number].id
-      this.panel.style.width = 450+"px"
-      this.panel.style.height = 290+"px"
-      this.panel.style.backgroundImage = 'url("'+panelJSON[number].pic+'")'
-      this.panel.style.position = "absolute"
-      this.panel.align = "center"
-      this.panel.style.top = this.y+"px"
-      this.panel.style.textAlign = "center"
-      this.wrapper = document.getElementById('wrapperDiv').appendChild(this.panel)
-      for(let i = 0; i < panelJSON[number].buttonJSON.length; i++){
-        this.createButton(panelJSON[number], i)
-      }
+      this.intcrament  = 0
+      this.go = false
+
   }
 
   render(){
     this.temp = this.lerp(this.y,300,.05)
-    this.panel.style.top = this.y+"px"
-    if(Math.abs(this.temp) >1){
-      this.y = this.temp
+    this.thing.style.top = this.y+"px"
+    //this.thing.style.left = this.x+"px"
+      if(Math.abs(this.temp) >1){
+        this.y = this.temp
     }
+    //this.ctx.drawImage(this.pImg, this.pLoc.x, this.pLoc.y)
+    //this.pLoc.vec.y += 1
   }
 
   lerp( a,  b,  f){
     return a + f * (b - a)
   }
-
   createButton(JSON1, i){
     var button = document.createElement("div")
     button.id= JSON1.buttonJSON[i].picId
@@ -148,4 +158,5 @@ var panelJSON= [{
         document.getElementById("creditesPanel").parentNode.removeChild(document.getElementById("creditesPanel"))
       }
     }]
+
 }]

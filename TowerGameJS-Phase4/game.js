@@ -21,16 +21,35 @@ function draw() {   // the animation loop
 // Game is the top level object and it contains the levels
 class Game {
   //  This is a test
-  constructor() { // from setup()
+  constructor() {
+    this.i = 0;
+    this.checkOnce = true;// from setup()
+    this.addEnemyTimer = 60;
+    this.stopped = 0;
     this.isRunning = true;
+    this.enemyNum = 5;
+    this.enemyTwoNum = -3;
+    this.enemyThreeNum = -5;
+    this.enemyFourNum = -6;
+    this.enemyFiveNum = -7;
+    this.timeSpawn = 0;
+    this.enemyTwo = [];
     this.placingTower = false;
     this.currentTower = 0;
     this.towerType = 0;
+    this.closeForRay;
     this.gameTime = 0;
     this.towers = [];
+    this.fullEnemyArray = [];
+    this.rays = [];
+    this.wave = 0;
+    this.explosiveBullets = [];
+    this.towerType;
     this.enemies = [];
     this.bullets = [];
+    this.closestIndex;
     this.bankValue = 1500;
+
     this.destroyed = 0;
     this.score = 0;
     this.canvas = document.createElement("canvas");
@@ -38,11 +57,14 @@ class Game {
         throw "No valid canvas found!";
     this.canvas.width = 900;
     this.canvas.height = 750;
-    document.getElementById('canDiv').appendChild(this.canvas);
+    this.canvas.canDiv=document.getElementById('canDiv')
+    this.canvas.canDiv.appendChild(this.canvas);
     this.context = this.canvas.getContext("2d");
     if(!this.context)
         throw "No valid context found!";
     this.lastTime = Date.now();
+    this.spawnTimer = Date.now();
+
     //select everything of type/class and set call backs
     this.tileDivs = this.createTileDivs();
     this.loadDOMCallBacks(this.tileDivs);
@@ -52,14 +74,19 @@ class Game {
     this.canvas.addEventListener('click', this.handleCNVMouseClicked, false);
 
     window.addEventListener('keypress', function(evt) {
-        if(evt.key == "E" || evt.key == "e")
+        if(evt.key == "E" || evt.key == "e" && towerGame.enemyTwo.length == 0 && towerGame.enemies.length == 0)
             towerGame.sendEnemies();
+
         }, false);
 
     this.mouseX = 0;
     this.mouseY = 0;
     this.w = 20;
     this.done = false;
+    this.level= new Level1(this)
+    //panelthings
+    this.panelStart = new Panel(this, 100,-500,"panelStart")
+    this.panelStart.createButtons()
     // containerarrays for cells
     this.grid = [];
     this.cols = Math.floor(this.canvas.width / this.w);
@@ -68,6 +95,9 @@ class Game {
     this.loadGrid();
     this.root = this.grid[this.cols - 1][this.rows -1];
     this.brushfire();
+
+    this.sprites = [];
+    this.loadSprites();
 }
 
   // The success callback when a tower canvas image
@@ -75,11 +105,23 @@ class Game {
   // displaying on the page.
   hideImgElement() { this.style.display = "none"; }
 
-  run() { // called from draw()
+  loadSprites(){
+      for (let i = 0; i < 1; i++){
+    //    console.log(json);
+      //  this.sprites.push(new Sprite(new vector2d(20,500), 50, 100, json));
+      }
+  }
+
+  run() {
+
+    this.level.run();
+  // called from draw()
+  /*
     let gt = this.updateGameTime();
     this.updateInfoElements(gt);
     this.removeBullets();
     this.removeEnemies();
+    this.updateWaves();
     if (this.isRunning) {
       this.render();
     }
@@ -91,16 +133,43 @@ class Game {
       }
     }
      // draw the towers
+     for (let i = 0; i < this.bullets.length; i++) {
+       this.bullets[i].run();
+     }
+
+
+     for(let i = 0; i < this.explosiveBullets.length; i++){
+      this.explosiveBullets[i].run();
+     }
+
+     for (let i = 0; i < this.enemies.length; i++) {
+       this.enemies[i].run();
+     }
+     if(this.enemies.length == 0)
+      this.explosiveBullets = [];
     for (let i = 0; i < this.towers.length; i++) {
       this.towers[i].run();
+      this.findClosestEnemy(i);
     }
+<<<<<<< HEAD
+    for (let i = 0; i < this.rays.length; i++) {
+      this.rays[i].run();
+=======
 
     for (let i = 0; i < this.enemies.length; i++) {
       this.enemies[i].run();
+>>>>>>> refs/remotes/origin/master
     }
-    for (let i = 0; i < this.bullets.length; i++) {
-      this.bullets[i].run();
+
+    for (let i = 0; i < this.enemyTwo.length; i++) {
+      this.enemyTwo[i].run();
     }
+  //  for (let i = 0; i < this.sprites.length; i++){
+    //  this.sprites[i].run();
+  //  }
+
+
+
 
     // some help text in the bottom left of the canvas
     this.context.save();
@@ -108,24 +177,70 @@ class Game {
     this.context.font = "14px sans-serif";
     this.context.fillText("Press the E key to send enemies", 20, this.canvas.height-20);
     this.context.restore();
-
-	for(var i = this.enemies.length - 1; i >= 0; i--){
-      for(var j = this.bullets.length - 1; j >= 0; j--){
-        if(this.circlePointCollision(this.bullets[j].loc.x, this.bullets[j].loc.y, this.enemies[i].loc.x, this.enemies[i].loc.y, this.enemies[i].radius, 2.2)){
-          this.bullets.splice(j, 1);
-          this.enemies[i].kill = true;
-          this.destroyed++;
-          this.score++;
-          if(this.score % 10 === 0) this.bankValue = this.bankValue + 10;
-        }
-      }
-    }
+<<<<<<< HEAD
+    */
   }
 
   render() { // draw game stuff
     this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
-
   }
+
+  findClosestEnemy(i){
+    if(this.enemies.length > 0){
+    var a = this.towers[i].loc.x - this.enemies[0].loc.x;
+    var b = this.towers[i].loc.y - this.enemies[0].loc.y;
+    var c = Math.sqrt(a*a + b*b);
+    this.towerType = "basic";
+  }
+    var a1;
+    var b1;
+    var close = 0;
+    if( this.towers.length > 0 ){
+      if(this.enemies.length > 0){
+
+      for(let j = 1; j< this.enemies.length; j++){
+        a = this.towers[i].loc.x - this.enemies[j].loc.x;
+        b = this.towers[i].loc.y - this.enemies[j].loc.y;
+        if(Math.sqrt(a*a + b*b) < c){
+          this.enemies[close].isTarget = false;
+          c = Math.sqrt(a*a + b*b);
+          close = j;
+          this.towerType = "basic";
+        }
+
+      }
+    }
+///////////////////
+    if(this.enemyTwo.length > 0){
+      console.log("hi");
+      for(let k = 0; k < this.enemyTwo.length; k++ ){
+        a1 = this.towers[i].loc.x - this.enemyTwo[k].loc.x;
+        b1 = this.towers[i].loc.y - this.enemyTwo[k].loc.y;
+        if(Math.sqrt(a1*a1 + b1*b1) < c){
+          close = k;
+          c = Math.sqrt(a1*a1 + b1*b1);
+          this.towerType = "two";
+        }
+      }
+    }
+      if(this.towerType == "basic" && this.enemies.length > 0){
+      this.towers[i].enX = this.enemies[close].loc.x;
+      this.towers[i].enY = this.enemies[close].loc.y;
+      this.closeForRay = this.enemies[close].loc;
+      this.closestIndex = close;
+      this.enemies[close].isTarget = true;
+    } else if( this.towerType = "two" && this.enemyTwo.length > 0){
+      this.towers[i].enX = this.enemyTwo[close].loc.x;
+      this.towers[i].enY = this.enemyTwo[close].loc.y;
+    }
+  }
+
+
+
+
+
+}
+
 
       // brushfire()
     // starting with the 'root' cell, which is the bottom right cell of the grid
@@ -200,32 +315,187 @@ class Game {
     // less than its current location.
     // A valid cell to start the enemy must have a parent because lack
     // of a parent means either it is occupied or it is blocked from any path.
+    //addEnemyTimer = 60,
+    //stopped = 0,
+    //addEnemyTimer--;
+  //if(addEnemyTimer<1) {
+    //addEnemy()
+    //addEnemyTimer = (stopped > 40) ? 20 : 30;
+
+    updateWaves(){
+      if(this.timeSpawn > 0 && this.enemies.length == 0 && this.checkOnce){
+       this.enemyNum += 3;
+        this.enemyTwoNum +=2;
+        console.log(this.wave);
+        //if(this.wave > 4){
+          this.enemyThreeNum += 1;
+          this.enemyFourNum += 1;
+          this.enemyFiveNum += 1;
+      //  }
+        this.checkOnce = false;
+        this.i = 0;
+      }
+      this.wave++;
+    }
+    addEnemiesFive(){
+        this.enemies.push(new YellowEnemy(this, this.grid[0][0], 0));
+        //this.fullEnemyArray.push(new YellowEnemy(this, this.grid[0][0], 0));
+        console.log("five");
+    }
+    addEnemiesFour(){
+        this.enemies.push(new PurpleEnemy(this, this.grid[0][0], 0));
+      //  this.fullEnemyArray.push(new PurpleEnemy(this, this.grid[0][0], 0));
+        console.log("four");
+    }
+    addEnemiesThree(){
+        this.enemies.push(new RedEnemy(this, this.grid[0][0], 0));
+        //this.fullEnemyArray.push(new RedEnemy(this, this.grid[0][0], 0));
+        console.log("three");
+    }
+    addEnemiesTwo(){
+      this.enemies.push(new GreenEnemy(this, this.grid[0][0], 0));
+      //this.fullEnemyArray.push(new GreenEnemy(this, this.grid[0][0], 0));
+    }
+    addEnemies(){
+      this.checkOnce = true;
+    try{
+
+      this.enemies.push(new Enemy(this, this.grid[0][0], 0));
+      //this.fullEnemyArray.push(new Enemy(this, this.grid[0][0], 0));
+
+
+      //  alert('VIDEO HAS STOPPED');
+    } catch (e){
+      console.log(e);
+      }
+    }
+
+    loadEnemies(){
+      var numEnemies = Math.random() * 5;     // up to 5 enemies
+      var row, col, startCell, i, j;
+
+      if(this.enemyFiveNum > 0){
+        for(var i = 0; i < this.enemyFiveNum; i++){
+        towerGame.addEnemiesFive();
+      }
+    }
+      if(this.enemyFourNum > 0){
+        for(var i = 0; i < this.enemyFourNum; i++){
+          towerGame.addEnemiesFour();
+        }
+      }
+      if(this.enemyThreeNum > 0){
+        for(var i = 0; i < this.enemyThreeNum; i++){
+          towerGame.addEnemiesThree();
+        }
+      }
+      if(this.enemyTwoNum > 0){
+        for(var i = 0; i < this.enemyTwoNum; i++){
+        towerGame.addEnemiesTwo();
+        }
+      }
+
+      for(var i = 0; i < this.enemyNum; i++){
+          towerGame.addEnemies();
+        }
+        //console.log(this.fullEnemyArray.length);
+      while(this.i < this.fullEnemyArray.length){
+          this.milliss = Date.now();
+          if( this.milliss - this.spawnTimer> 200){
+            this.spawnTimer = this.milliss;
+            towerGame.enemies.push(towerGame.fullEnemyArray[this.i]);
+            //towerGame.sendEnemies(this.i);
+            console.log("spawn");
+            this.i++;
+          }
+        }
+/*
+        for(var i = 0; i < this.fullEnemyArray.length; i++){
+            towerGame.sendEnemies(i);
+        //    console.log("adsf");
+      } */
+      //  console.log("his");
+
+
+
+
+    }
     sendEnemies() {
-        var numEnemies = Math.random() * 5;     // up to 5 enemies
-        var row, col, startCell, i, j;
-        for( i = 0; i < numEnemies; i++) {
-            for(j = 0; j < 3; j++) { // try 3 times to find valid start cell
-                let row = Math.floor(Math.random() * (this.rows/2));    // top  half of rows
-                let col = Math.floor(Math.random() * this.cols);        // any column
-                startCell = this.grid[col][row];
-                if(startCell && startCell.parent)   // must have a parent to have any path
-                    break;
-                }
-            if(j < 3) { // if we found a valid cell to start the enemy
-                let randomPath = Math.floor(Math.random() * 2);    // about half
-                this.enemies.push(new Enemy(this, startCell, randomPath));
-                }
-            }
+        //console.log(towerGame.fullEnemyArray[0]);
+      //for(var i = 0; i < towerGame.fullEnemyArray.length; i++){
+    //  setTimeout(function(){
+      //  towerGame.enemies.push(towerGame.fullEnemyArray[i]);
+    //  }, 150 * i);
+  //    console.log("ok" + i);
+
+
+
+
+
+
+
+        //////////////////////////////////////////////////
+
+      for(var i = 0; i < this.enemyNum; i++){
+          setTimeout(function(){
+            towerGame.addEnemies();
+          }, 200 * i);
+
+      }
+      if(this.enemyTwoNum > 0){
+      for(var i = 0; i < this.enemyTwoNum; i++){
+        setTimeout(function(){
+          towerGame.addEnemiesTwo();
+        }, 200 * i);
+
+    }
+  }
+
+  if(this.enemyThreeNum > 0){
+    for(var i = 0; i < this.enemyThreeNum; i++){
+      setTimeout(function(){
+        towerGame.addEnemiesThree();
+      }, 200 * i);
+
+    }
+  }
+  if(this.enemyFourNum > 0){
+    console.log("purps");
+    for(var i = 0; i < this.enemyFourNum; i++){
+      setTimeout(function(){
+        towerGame.addEnemiesFour();
+      }, 200 * i);
+
+    }
+  }
+  if(this.enemyFiveNum > 0){
+    for(var i = 0; i < this.enemyFiveNum; i++){
+      setTimeout(function(){
+        towerGame.addEnemiesFive();
+      }, 200 * i);
+
+    }
+  }
+      this.timeSpawn++;
+      //console.log(this.timeSpawn);//this.enemies.length);
     }
 
     // Delete any enemies that have died
     removeEnemies() {
+    //  console.log(this.enemies[0]);
       for(let i = this.enemies.length-1; i >= 0; i--) {
         if(this.enemies[i].kill)
+
             this.enemies.splice(i,1);   // delete this dead enemy
         else this.enemies[i].run();
+
         }
-    }
+        for(let i = this.enemyTwo.length-1; i >= 0; i--) {
+          if(this.enemyTwo[i].kill)
+            this.enemyTwo.splice(i, 1);
+          else this.enemyTwo[i].run();
+        }
+  }
 
   removeBullets(){
     if(this.bullets.length < 1) return;
@@ -245,14 +515,18 @@ class Game {
     for(let i = 0; i < infoElements.length; i++){
       let info = infoElements[i];
       // change the html content after condition--use indexOf
+
       if(info.innerHTML.indexOf('Bank') != -1){
         info.innerHTML = 'Bank <br/>' + this.bankValue;
       }else if(info.innerHTML.indexOf('Time') != -1){
         info.innerHTML = 'Time <br/>' + time;
+      } else if( info.innerHTML.indexOf('Wave') != -1){
+        info.innerHTML = 'Wave <br/>' + this.timeSpawn;
       }else if(info.innerHTML.indexOf('Destroyed') != -1){
         info.innerHTML = 'Destroyed <br/>' + this.destroyed;
       }else if(info.innerHTML.indexOf('Score') != -1){
         info.innerHTML = 'Score <br/>' + this.score;
+
       }
     }
   }
@@ -268,15 +542,18 @@ class Game {
 
    // +++++++++++++++++++++++++++++++++++++++++++  load a 2D array with cells
   loadGrid(){
+
     for(var i = 0; i < this.cols; i++){     // columns of rows
       this.grid[i] = [];
       for(var j = 0; j < this.rows; j++){
         this.grid[i][j] = new Cell(this, vector2d((i*this.w), (j*this.w)), ++cellId);
         // make 10% of the cells occupied
-        if(this.grid[i][j] != this.root && Math.floor(Math.random()*100) < 10)
-            this.grid[i][j].occupied = true;
+        //if(this.grid[i][j] != this.root && Math.floor(Math.random()*100) < 8 && i != 0 && i!=10)
+        //    this.grid[i][j].occupied = true;
+
       }
     }
+
 
   }  // ++++++++++++++++++++++++++++++++++++++++++++++  End LoadGrid
 
@@ -304,8 +581,29 @@ class Game {
       mtd.cnvBulImg.src = cnvBulImgPath;    // start loading image
 
       document.getElementById("menuDiv").appendChild(mtd);
+      if(i == 0){
+        mtd.ability = "normal";
+//        this.bankValue = 200;
+
+      } else if(i == 1){
+        mtd.ability = "fast";
+      //  this.bankValue = 500;
+
+      } else if(i == 2){
+        mtd.ability = "freeze";
+      //  this.bankValue = 300;
+
+      } else if(i == 3){
+        mtd.ability = "explosive";
+      //  this.bankValue = 700;
+
+      } else {
+        mtd.ability = "ray";
+      //  this.bankValue = 1000;
+      }
 
       mtd.cost = 100*i -50;
+
       console.log(mtd.cost);
       mtd.id = 'towImgDiv' + i;
       tiles.push(mtd);
@@ -336,7 +634,8 @@ class Game {
   createTower(mtd) { // menu turret div
     // create a new tower object and add to array list
     // the menu tower div contains the parameters for the tower
-    console.log(mtd.getAttribute("id"));
+
+  //  console.log(mtd.getAttribute("id"));
     if(mtd.getAttribute("id") === "towImgDiv5") {
       var wall = new Wall(mtd.cost, mtd.cnvTurImg);
       if(wall) {
@@ -345,7 +644,7 @@ class Game {
         println('failed to make wall');
       }
     } else {
-      var tower = new Tower( mtd.cost, mtd.cnvTurImg, mtd.cnvBulImg);
+      var tower = new Tower( mtd.cost, mtd.cnvTurImg, mtd.cnvBulImg, mtd.ability);
       if(tower)
         this.towers.push(tower); // add tower to the end of the array of towers
       else {
@@ -398,8 +697,11 @@ class Game {
   tileClicked() {
     //if user clicks tile and not placing tile change placing to true
     // can add Tower checks cost and other conditions
+    console.log(towerGame.getBankValue());
     if(towerGame.placingTower === true) return;
+
     if (towerGame.getBankValue() >= this.cost) {
+
       towerGame.createTower(this);
       towerGame.bankValue -= this.cost;
       towerGame.placingTower = true;
@@ -410,7 +712,7 @@ class Game {
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++    mouse handlers
   handleCNVMouseOver() {
     if(towerGame.towers.length < 1) return;
-    towerGame.towers[towerGame.towers.length-1].visible = true;
+      towerGame.towers[towerGame.towers.length-1].visible = true;
   }
 
   handleCNVMouseMoved(event) {
