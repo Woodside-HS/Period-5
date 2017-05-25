@@ -117,6 +117,7 @@ class Level2 extends Level{
       this.game.level=new Level3(this.game)
     }
   }
+}
 
 
 class Level3 extends Level{

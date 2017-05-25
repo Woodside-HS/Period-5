@@ -86,7 +86,7 @@ class Game {
     this.level= new Level1(this)
     //panelthings
     this.panelStart = new Panel(this, 100,-500,"panelStart")
-    this.panelStart.createButtons()
+    this.panelStart.createButtons();
     // containerarrays for cells
     this.grid = [];
     this.cols = Math.floor(this.canvas.width / this.w);
@@ -717,6 +717,7 @@ class Game {
 
   handleCNVMouseMoved(event) {
     // add some properties to the canvas to track the mouse.
+    console.log(towerGame);
     this.mouseX = event.offsetX;
     this.mouseY = event.offsetY;
     if(towerGame.towers.length < 1) return;
