@@ -62,6 +62,7 @@ class Level2 extends Level{
      for (let i = 0; i < this.game.enemies.length; i++) {
        //console.log("run");
        this.game.enemies[i].run();
+
      }
     for (let i = 0; i < this.game.towers.length; i++) {
       this.game.towers[i].run();
@@ -117,7 +118,7 @@ class Level2 extends Level{
     }
   }
 
-}
+
 class Level3 extends Level{
   constructor(game) {
     super(game)
