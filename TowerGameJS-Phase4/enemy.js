@@ -67,8 +67,6 @@ class Enemy {
 
 
 
-
-<<<<<<< HEAD
     // if(this.randomPath)
      this.ctx.fillStyle = this.col;
     // else this.ctx.fillStyle = 'green';
