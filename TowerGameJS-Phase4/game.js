@@ -30,7 +30,7 @@ class Game {
     this.towers = [];
     this.enemies = [];
     this.bullets = [];
-    this.bankValue = 500;
+    this.bankValue = 1500;
     this.destroyed = 0;
     this.score = 0;
     this.canvas = document.createElement("canvas");
@@ -94,6 +94,7 @@ class Game {
     for (let i = 0; i < this.towers.length; i++) {
       this.towers[i].run();
     }
+
     for (let i = 0; i < this.enemies.length; i++) {
       this.enemies[i].run();
     }
@@ -279,80 +280,6 @@ class Game {
 
   }  // ++++++++++++++++++++++++++++++++++++++++++++++  End LoadGrid
 
-  //check for collision between point, circle or square
-  //*****both shapes must have r if circle, w if rect, loc vector*****
-  // checkCollide(shape1, shape2) {
-  //   if(shape1.shape === "circle") {
-  //     if(shape2.shape === "circle") {
-  //       //circle-circle
-  //       if(shape1.r + shape2.r >= vector2d.dist(shape1.loc, shape2.loc)) return true;
-  //       return false;
-  //     } else if(shape2.shape === "square") {
-  //       //circle-square
-  //       let topLeft = shape2.loc;
-  //       let topRight = new vector2d(shape2.loc.x + shape2.w, shape2.loc.y);
-  //       let bottomRight = new vector2d(shape2.loc.x + shape2.w, shape2.loc.y + shape2.w);
-  //       let bottomLeft = new vector2d(shape2.loc.x, shape2.loc.y +_shape2.w);
-  //       let dist1 = vector2d.dist(topLeft, shape1.loc);
-  //       let dist2 = vector2d.dist(topRight, shape1.loc);
-  //       let dist3 = vector2d.dist(bottomRight, shape1.loc);
-  //       let dist4 = vector2d.dist(bottomLeft, shape1.loc);
-  //       if(dist1 <= shape1.r || dist2 <= shape1.r || dist3 <= shape1.r || dist4 <= shape1.r) return true;
-  //       return false;
-  //     } else if(shape2.shape === "point") {
-  //       //circle-point
-  //       if(shape1.r >= vector2d.dist(shape1.loc, shape2.loc)) return true;
-  //       return false;
-  //     } else {
-  //       throw "shape2 shape not acceptable.";
-  //     }
-  //
-  //   } else if(shape1.shape === "square") {
-  //     if(shape2.shape === "circle") {
-  //       //square-circle
-  //       let topLeft = shape1.loc;
-  //       let topRight = new vector2d(shape1.loc.x + shape1.w, shape1.loc.y);
-  //       let bottomRight = new vector2d(shape1.loc.x + shape1.w, shape1.loc.y + shape1.w);
-  //       let bottomLeft = new vector2d(shape1.loc.x, shape1.loc.y + shape1.w);
-  //       let dist1 = vector2d.dist(topLeft, shape2.loc);
-  //       let dist2 = vector2d.dist(topRight, shape2.loc);
-  //       let dist3 = vector2d.dist(bottomRight, shape2.loc);
-  //       let dist4 = vector2d.dist(bottomLeft, shape2.loc);
-  //       if(dist1 <= shape2.r || dist2 <= shape2.r || dist3 <= shape2.r || dist4 <= shape2.r) return true;
-  //       return false;
-  //     } else if(shape2.shape === "square") {
-  //       //square-square
-  //       if (shape1.loc.x < shape2.loc.x + shape2.w &&
-  //         shape1.loc.x + shape1.w > shape2.loc.x &&
-  //         shape1.loc.y < shape2.loc.y + shape2.w &&
-  //         shape1.w + shape1.loc.y > shape2.loc.y) {
-  //           return true;
-  //       }
-  //       return false;
-  //     } else if(shape2.shape === "point") {
-  //       //square-point
-  //     } else {
-  //       throw "shape2 shape not acceptable.";
-  //     }
-  //   } else if(shape1.shape === "point") {
-  //     if(shape2.shape === "circle") {
-  //       //point-circle
-  //       if(shape2.r >= vector2d.dist(shape2.loc, shape1.loc)) return true;
-  //       return false;
-  //     } else if(shape2.shape === "square") {
-  //       //point-square
-  //     } else if(shape2.shape === "point") {
-  //       //point-point
-  //       if(vector2d.dist(shape2.loc, shape1.loc) < 1) return true;
-  //       return false;
-  //     } else {
-  //       throw "shape2 shape not acceptable.";
-  //     }
-  //   } else {
-  //     throw "shape1 shape not acceptable.";
-  //   }
-  // }
-
 
 
   // Create the divs to hold the menu of towers with
@@ -362,7 +289,7 @@ class Game {
   createTileDivs(){
     var tiles = [];
 
-    for(var i = 0; i < 5; i++){
+    for(var i = 0; i < 6; i++){
       var mtd = document.createElement("div"); // createDiv("");
       var cnvTurImgPath = "tow" + (i+1) + "s.png";  // small tower image for canvas
       var cnvBulImgPath = "b" + (i+1) + ".png";     // bullet image for canvas
@@ -378,7 +305,7 @@ class Game {
 
       document.getElementById("menuDiv").appendChild(mtd);
 
-      mtd.cost = 100*i +50;
+      mtd.cost = 100*i -50;
       console.log(mtd.cost);
       mtd.id = 'towImgDiv' + i;
       tiles.push(mtd);
@@ -409,13 +336,24 @@ class Game {
   createTower(mtd) { // menu turret div
     // create a new tower object and add to array list
     // the menu tower div contains the parameters for the tower
-    var tower = new Tower( mtd.cost, mtd.cnvTurImg, mtd.cnvBulImg);
-    if(tower)
-      this.towers.push(tower); // add tower to the end of the array of towers
-    else {
-      println('failed to make tower');
+    console.log(mtd.getAttribute("id"));
+    if(mtd.getAttribute("id") === "towImgDiv5") {
+      var wall = new Wall(mtd.cost, mtd.cnvTurImg);
+      if(wall) {
+        this.towers.push(wall);
+      } else {
+        println('failed to make wall');
+      }
+    } else {
+      var tower = new Tower( mtd.cost, mtd.cnvTurImg, mtd.cnvBulImg);
+      if(tower)
+        this.towers.push(tower); // add tower to the end of the array of towers
+      else {
+        println('failed to make tower');
+      }
     }
   }
+
 
   placeTower(cell) {
     //  place tower into play area at center of cell
@@ -442,7 +380,6 @@ class Game {
         mtd.addEventListener('mousedown', this.tilePressed, false);
         mtd.addEventListener('click', this.tileClicked, false);
     }
-
   }
 
   //+++++++++++++++++++++++++   tile menu callbacks
@@ -469,6 +406,7 @@ class Game {
     }
 
   }
+
 //  ++++++++++++++++++++++++++++++++++++++++++++++++++    mouse handlers
   handleCNVMouseOver() {
     if(towerGame.towers.length < 1) return;
@@ -483,8 +421,11 @@ class Game {
     if(!towerGame.towers[towerGame.towers.length-1].placed &&
       towerGame.placingTower === true ){
         //follow mouse
+
         towerGame.towers[towerGame.towers.length-1].loc.x = this.mouseX;
         towerGame.towers[towerGame.towers.length-1].loc.y = this.mouseY;
+        console.log(" mouseX? "+ this.mouseX);
+        console.log(" mouseY? "+ this.mouseY);
 //        console.log(this.mouseX + ", " + this.mouseY + ", " + towerGame.towers[towerGame.towers.length-1].loc.toString());
       }
   }

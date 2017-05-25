@@ -73,7 +73,7 @@ body{
   border:solid black 2px;
   width:60px;
   height:80px;
-  margin-top: 55px;
+  margin-top: 20px;
   margin-left: 10px;
   padding-top: 10px;
   padding-left: 20PX;
@@ -85,7 +85,7 @@ body{
   border:solid black 2px;
   width:60px;
   height:80px;
-  margin-top: 55px;
+  margin-top: 20px;
   margin-left: 10px;
   padding-top: 10px;
   padding-left: 20PX;
@@ -97,7 +97,7 @@ body{
   border:solid black 2px;
   width:60px;
   height:80px;
-  margin-top: 55px;
+  margin-top: 20px;
   margin-left: 10px;
   padding-top: 10px;
   padding-left: 20PX;
@@ -109,7 +109,19 @@ body{
   border:solid black 2px;
   width:60px;
   height:80px;
-  margin-top: 55px;
+  margin-top: 20px;
+  margin-left: 10px;
+  padding-top: 10px;
+  padding-left: 20PX;
+  border-radius: 5px;
+}
+
+#towImgDiv5{
+  background-color: #DDD;
+  border:solid black 2px;
+  width:60px;
+  height:80px;
+  margin-top: 20px;
   margin-left: 10px;
   padding-top: 10px;
   padding-left: 20PX;
